@@ -9,4 +9,4 @@ CREATE TABLE IF NOT EXISTS `pm` (
   `subject` text,
   `text` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;

@@ -58,6 +58,7 @@ class DefaultController extends Controller
 
 	/**
 	 * View message
+	 * @param int $id message ID
 	 */
 	public function actionView($id)
 	{
@@ -87,8 +88,6 @@ class DefaultController extends Controller
 	 * Compose personal message
 	 *
 	 * $mode - перменная, которая передается в view для определения действия
-	 *   compose - показать форму отправки сообщения
-	 *   success - сообщение успешно отправлено
 	 */
 	public function actionCreate($to)
 	{
@@ -97,7 +96,7 @@ class DefaultController extends Controller
 		$model->recipient = $to;
 		if ($model->recipientUser === null)
 		{
-			$this->redirect($this->createUrl('/pm/default'));
+			throw new CHttpException(404, "Пользователь не найден");
 		}
 
 		if (isset($_POST['PersonalMessage'])) 
@@ -114,7 +113,7 @@ class DefaultController extends Controller
 		} else {
 			if ($model->sender == $model->recipient)
 			{
-				$this->redirect($this->createUrl('/pm/default'));
+				throw new CHttpException(403, "Вы не можете посылать сообщения самому себе.");
 			}
 			
 			if (isset($_GET['subj']))
@@ -132,8 +131,10 @@ class DefaultController extends Controller
 
 
 	/**
-	 * Ответить на существующее сообщение
+	 * Reply to message
 	 * @todo запретить отвечать на свои же сообщения
+	 *
+	 * @param int $id message ID
 	 */
 	public function actionReply($id)
 	{
@@ -146,11 +147,10 @@ class DefaultController extends Controller
 		$modelNew = new PersonalMessage;
 		$modelNew->sender = $this->_userId;
 		$modelNew->recipient = $model->sender == $this->_userId?
-			$model->recipient:$model->sender;
+		$model->recipient:$model->sender;
 		
 		if (isset($_POST['PersonalMessage'])) {
 			$modelNew->attributes = $_POST['PersonalMessage'];
-			$modelNew->date = time();			
 
 			if ($modelNew->save()) {
 				Yii::app()->user->setFlash('success', PmModule::t('Сообщение отправлено!'));
@@ -161,7 +161,7 @@ class DefaultController extends Controller
 			
 		} else
 		{
-			$modelNew->subject = $this->addRe($model->subject);	
+			$modelNew->subject = $model->addReplyPrefix($model->subject);	
 		}
 
 		$this->render('reply',
@@ -173,7 +173,9 @@ class DefaultController extends Controller
 	}
 	 
 	/**
-	 * Удалить персональное сообщение
+	 * Delete message
+	 *
+	 * @param int $id message ID
 	 */
 	public function actionDelete($id)
 	{
@@ -203,7 +205,7 @@ class DefaultController extends Controller
 	 */
 	public function actionListIncoming()
 	{
-	$pm = Yii::app()->getModule('pm');
+		$pm = Yii::app()->getModule('pm');
 
 		$criteria = new CDbCriteria(array(
 			'condition' => 'recipient=:recipient AND `dr`=0',
@@ -268,37 +270,17 @@ class DefaultController extends Controller
 		return $this->_userId;
 	}
 
+	/**
+	 * Check if user have access to edit message model
+	 *
+	 * @param PersonalMessage $model
+	 * @return bool
+	 */
 	private function haveAccess(&$model) 
 	{
 		return (($this->_userId == $model->sender) && !$model->ds) ||
 			   (($this->_userId == $model->recipient) && !$model->dr);
 	}
 
-	/**
-	 * Add 'Re: ' prefix to message subject
-	 *
-	 * @param string $reply
-	 */
-	private function addRe($reply)
-	{
-		if (substr($reply, 0, 4)=="Re: ")
-		{
-			return str_replace("Re: ", "Re(2): ", $reply);
-		} elseif (substr($reply, 0, 3)=="Re(")
-		{
-				return preg_replace_callback('~^Re\((\d{1,2})\)~', array($this, 'replaceRe'), $reply);
-		} else {
-			return "Re: $reply";
-		}
-	}
-
-	/**
-	 * Replace 'Re: ' prefix callback function
-	 *
-	 * @param array $patterns
-	 */
-	private function replaceRe($patterns)
-	{
-		return str_replace($patterns[1], $patterns[1]+1, $patterns[0]);
-	}
+	
 }

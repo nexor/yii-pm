@@ -17,6 +17,6 @@
 	<?php
 	    
 		echo CHtml::textField('to');
-        echo Chtml::submitButton(PmModule::t('Новое сообщение'));
+        echo CHtml::submitButton(PmModule::t('Новое сообщение'), array('name' => false));
 	?>
 <?php $this->endWidget(); ?>

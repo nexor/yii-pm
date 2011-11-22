@@ -99,4 +99,78 @@ class PersonalMessage extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	/**
+	 * Send this message to one or many users.
+	 *
+	 * @param int|array $recipients recipients user id's
+	 */
+	public function send($recipients)
+	{
+		if (!is_array($recipients))
+		{
+			$this->recipient = $recipients;
+			$this->save();
+			return $this;
+		} else {
+
+			$this->_errorModels = array();
+			foreach ($recipients as $userid)
+			{
+				$message = $this->clone();
+				$message->recipient = $userid;
+				if (!$message->save())
+				{
+					$this->errorModels[] = $message;	
+				}
+			}
+			
+			return count($this->errorModels) == 0;
+		}
+	}
+
+	public function getErrorsModels()
+	{
+		return $this->_errorModels;
+	}
+
+	public function beforeSave()
+	{
+		if ($this->isNewRecord)
+		{
+			if (empty($this->date))
+			{
+				$this->date = time();
+			}
+		}
+		return parent::beforeSave();
+	}
+
+	/**
+	 * Add 'Re: ' prefix to message subject
+	 *
+	 * @param string $reply source topic
+	 */
+	public function addReplyPrefix($reply)
+	{
+		if (substr($reply, 0, 4)=="Re: ")
+		{
+			return str_replace("Re: ", "Re(2): ", $reply);
+		} elseif (substr($reply, 0, 3)=="Re(")
+		{
+				return preg_replace_callback('~^Re\((\d{1,2})\)~', array($this, '_replaceReplyPrefixCallback'), $reply);
+		} else {
+			return "Re: $reply";
+		}
+	}
+
+	/**
+	 * Replace 'Re: ' prefix callback function
+	 *
+	 * @param array $patterns
+	 */
+	private function _replaceReplyPrefixCallback($patterns)
+	{
+		return str_replace($patterns[1], $patterns[1]+1, $patterns[0]);
+	}
 }

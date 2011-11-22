@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Personal Messages module for Yii framework
+ *
+ * @version 0.2
+ */
 class PmModule extends CWebModule
 {
 	public $userClass = 'User'; //User model class name
