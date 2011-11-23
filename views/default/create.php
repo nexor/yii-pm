@@ -1,6 +1,6 @@
-<h2>Личные сообщения - новое сообщение</h2>
+<h2><?php echo PmModule::t('Personal messages'); ?> - <?php echo PmModule::t('Compose message'); ?></h2>
 
-<p>Новое сообщение для пользователя #<?php echo $model->recipientUser->{$this->module->useridField}; ?></p>
+<p><?php echo PmModule::t('Compose message for user');?> #<?php echo $model->recipient; ?></p>
 
 <?php $this->renderPartial('_form', array('model' => $model)); ?>
 

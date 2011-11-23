@@ -5,27 +5,16 @@ class DefaultController extends Controller
 	protected $_userId; // current user ID
 
 	public function beforeAction($action)
-	{
-		if (parent::beforeAction($action) )
-		{
-			$this->_userId = Yii::app()->getModule('pm')->getUserId();
-			return true;
-		} else
-		{
-			return false;
-		}
+	{	
+		$this->_userId = Yii::app()->getModule('pm')->getUserId();
+		return parent::beforeAction($action);
 	}
 
 	public function filters()
 	{
-		if (isset(Yii::app()->getModule('pm')->filters['pm']))
-		{
-			return Yii::app()->getModule('pm')->filters['pm'];
-		} else {
-			return array(
-
-			);
-		}
+		return array(
+			'accessControl'
+		);
 	}
 
 	public function accessRules()
@@ -42,6 +31,8 @@ class DefaultController extends Controller
 
 	/**
 	 * Personal messages menu
+	 *
+	 * @todo use pmwidget
 	 */
 	public function actionIndex()
 	{		
@@ -74,9 +65,9 @@ class DefaultController extends Controller
 		}
 			
 		// mark message as read
-		if ( ($model->recipient == $this->_userId) && !$model->read) {
-			$model->read = 1;
-			$model->save();
+		if ($model->recipient == $this->_userId)
+		{
+			$model->markAsRead();
 		}
 	
 		$this->render('view', array(
@@ -96,7 +87,7 @@ class DefaultController extends Controller
 		$model->recipient = $to;
 		if ($model->recipientUser === null)
 		{
-			throw new CHttpException(404, "Пользователь не найден");
+			throw new CHttpException(404, PmModule::t('User not found'));
 		}
 
 		if (isset($_POST['PersonalMessage'])) 
@@ -106,14 +97,14 @@ class DefaultController extends Controller
 			
 			if ($model->save())
 		       	{
-				Yii::app()->user->setFlash('success', PmModule::t('Сообщение отправлено!'));
+				Yii::app()->user->setFlash('success', PmModule::t('Message has been sent.'));
 				$this->redirect(array('/pm/default'));					
 			}
 			
 		} else {
 			if ($model->sender == $model->recipient)
 			{
-				throw new CHttpException(403, "Вы не можете посылать сообщения самому себе.");
+				throw new CHttpException(403, "You can't send messages to yourself");
 			}
 			
 			if (isset($_GET['subj']))
@@ -153,7 +144,7 @@ class DefaultController extends Controller
 			$modelNew->attributes = $_POST['PersonalMessage'];
 
 			if ($modelNew->save()) {
-				Yii::app()->user->setFlash('success', PmModule::t('Сообщение отправлено!'));
+				Yii::app()->user->setFlash('success', PmModule::t('Сообщение отправлено'));
 				$this->redirect(array('/pm/default'));					
 			} else {
 				$mode = 'error';
@@ -192,7 +183,8 @@ class DefaultController extends Controller
 					
 				if (!isset($_GET['ajax']))
 				{
-					$this->render('delsuccess');
+					Yii::app()->user->setFlash('success', PmModule::t('Message has been succsefully deleted.'));
+					$this->redirect(array('/pm/default/listincoming'));
 				}
 			}
 		} else {

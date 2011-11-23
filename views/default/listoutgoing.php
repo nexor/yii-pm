@@ -1,4 +1,4 @@
-<h2>Личные сообщения - исходящие</h2>
+<h2><?php echo PmModule::t('Personal messages'); ?> - <?php echo PmModule::t('Outgoing'); ?></h2>
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'dataProvider' => $dataProvider,

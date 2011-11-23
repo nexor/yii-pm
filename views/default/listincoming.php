@@ -1,11 +1,11 @@
-<h2>Личные сообщения - входящие</h2>
+<h2><?php echo PmModule::t('Personal messages'); ?> - <?php echo PmModule::t('Incoming'); ?></h2>
 
-<?php 
-if (Yii::app()->user->hasFlash('success')) {
-	?>
+<?php if (Yii::app()->user->hasFlash('success')): ?>
+	<div class="flash-success">
        <?php echo Yii::app()->user->getFlash('success'); ?>
-<?php
-} ?>
+    </div>
+<?php endif; ?>
+
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'dataProvider' => $dataProvider,
 	'columns' => array(

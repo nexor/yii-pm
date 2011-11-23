@@ -21,7 +21,7 @@
 	</div>
 
 	<div class="row buttons">
-		<?php echo CHtml::submitButton(PmModule::t('Отправить')); ?>
+		<?php echo CHtml::submitButton(PmModule::t('Send')); ?>
 	</div>
 <?php $this->endWidget(); ?>
 </div>

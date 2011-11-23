@@ -1,4 +1,4 @@
-<h2>Личные сообщения - ответить на сообщение</h2>
+<h2><?php echo PmModule::t('Personal messages'); ?> - <?php echo PmModule::t('Reply to message'); ?></h2>
 
 <div style="border: 1px dashed #444444; padding: 10px;">
 	<h3><?php echo CHtml::encode($model->subject); ?></h3>

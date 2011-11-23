@@ -1,12 +1,11 @@
-<h2>Личные сообщения - просмотр сообщения</h2>
+<h2><?php echo PmModule::t('Personal messages'); ?>  - <?php echo PmModule::t('View message'); ?></h2>
 
 <?php $this->widget('zii.widgets.CDetailView', array('data' => $model)); ?>
 
-<a href="<?php echo $this->createUrl('/pm/default/reply', array('id' => $model->id));?>"
-	><?php echo PmModule::t('Ответить'); ?></a>
+<?php echo CHtml::link(PmModule::t('Reply'), array('/pm/default/reply', 'id' => $model->id));?>
 
-<?php echo CHtml::link(PmModule::t('Удалить'), '#', array(
+<?php echo CHtml::link(PmModule::t('Delete'), '#', array(
 	'submit' => array('/pm/default/delete', 'id' => $model->id),
-	'confirm' => PmModule::t('Вы действительно хотите удалить это сообщение?')	
+	'confirm' => PmModule::t('Do you really want to delete this message?')	
 )); ?>
 	

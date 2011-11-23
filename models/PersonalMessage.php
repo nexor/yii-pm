@@ -52,9 +52,10 @@ class PersonalMessage extends CActiveRecord
 	 */
 	public function relations()
 	{
+		$userClass = Yii::app()->getModule('pm')->userClass;
 		return array(
-			'senderUser' => array(self::BELONGS_TO, Yii::app()->getModule('pm')->userClass, 'sender'),
-			'recipientUser' => array(self::BELONGS_TO, Yii::app()->getModule('pm')->userClass, 'recipient')
+			'senderUser' => array(self::BELONGS_TO, $userClass, 'sender'),
+			'recipientUser' => array(self::BELONGS_TO, $userClass, 'recipient')
 		);
 	}
 
@@ -65,12 +66,12 @@ class PersonalMessage extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'sender' => PmModule::t('Отправитель'),
-			'recipient' => PmModule::t('Получатель'),
-			'read' => PmModule::t('Прочитано'),
-			'date' => PmModule::t('Дата'),
-			'subject' => PmModule::t('Тема сообщения'),
-			'text' => PmModule::t('Текст'),
+			'sender' => PmModule::t('Sender'),
+			'recipient' => PmModule::t('Recipient'),
+			'read' => PmModule::t('Read'),
+			'date' => PmModule::t('Date'),
+			'subject' => PmModule::t('Subject'),
+			'text' => PmModule::t('Text'),
 		);
 	}
 
@@ -146,6 +147,15 @@ class PersonalMessage extends CActiveRecord
 		return parent::beforeSave();
 	}
 
+	public function markAsRead()
+	{
+		if (!$this->read)
+		{
+			$this->read = 1;
+			$this->save();
+		}
+	}
+
 	/**
 	 * Add 'Re: ' prefix to message subject
 	 *
@@ -172,5 +182,5 @@ class PersonalMessage extends CActiveRecord
 	private function _replaceReplyPrefixCallback($patterns)
 	{
 		return str_replace($patterns[1], $patterns[1]+1, $patterns[0]);
-	}
+	}	
 }
