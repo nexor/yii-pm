@@ -20,6 +20,19 @@
 	</li>
 </ul>
 
+<p>10 пользователей:</p>
+<ul>
+	<?php foreach ($users as $user): ?>
+	<li> 
+		<?php echo $user->{$this->module->getNameMethod}(); ?>
+		&nbsp;
+		(<?php echo CHtml::link('Написать сообщение', array(
+			'create', 'to' => $user->getPrimaryKey())
+		); ?>)
+	</li>
+	<?php endforeach; ?>
+</ul>
+
 <?php $form = $this->beginWidget('CActiveForm', array(
 	'action' => $this->createUrl('/pm/default/create'),
 	'method' => 'get'
@@ -33,5 +46,5 @@
 <?php $this->endWidget(); ?>
 
 <br />
-<h2>Widget example</h2>
+	<h2><?php echo PmModulle::t('Widget example'); ?></h2>
 <?php $this->widget('application.modules.pm.components.pmwidget'); ?>

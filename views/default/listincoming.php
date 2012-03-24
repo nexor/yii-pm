@@ -1,4 +1,7 @@
-<h2><?php echo PmModule::t('Personal messages'); ?> - <?php echo PmModule::t('Incoming'); ?></h2>
+<?php
+	$this->breadcrumbs += array(PmModule::t('Incoming')); 
+?>
+<h2><?php echo PmModule::t('Incoming'); ?></h2>
 
 <?php if (Yii::app()->user->hasFlash('success')): ?>
 	<div class="flash-success">
@@ -9,24 +12,17 @@
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'dataProvider' => $dataProvider,
 	'columns' => array(
-		'id',
-		'sender',
 		array(
-			'name' => 'read',
-			'value' => '$data->read?"yes":"no"'
+			'name' => 'sender_id',
+			'type' => 'text',
+			'value' => '$data->senderName'
 		),
-		array(
-			'name' => 'date',
-			'value' => 'Yii::app()->dateFormatter->format("yyy-MM-dd HH:mm:ss", $data->date)'
-		),
-		'subject',
+		'read:boolean',
+		'created',
+		'subject:text',
 		array(
 			'class' => 'CButtonColumn',
 			'template' => '{view}{delete}'
 		)
 	)
 ));?>
-
-
-
-

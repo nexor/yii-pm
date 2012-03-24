@@ -3,7 +3,7 @@
 return array(
 
 	//models/PersonalMessage
-	'Date'  => 'Дата',
+	'Created'  => 'Создано',
 	'Text'   => 'Текст',
 	'Read'  => 'Прочитано',
 	'Subject'   => 'Заголовок',
@@ -14,8 +14,8 @@ return array(
 
 	'Send' => 'Отправить',
 	'Error' => 'Ошибка',
-	'Удалить' => 'Delete',
-	'Отмена' => 'Cancel',
+	'Delete' => 'Удалить',
+	'Cancel' => 'Отмена',
 	 
 	'Message has been sent.' => 'Сообщение отправлено',
 	'Message not found.' => 'Сообщение не найдено.', 
@@ -30,13 +30,14 @@ return array(
 	"Can't find recipient" => 'Невозможно найти получателя',
 	"Can't find sender" => 'Невозможно найти отправителя',
 
-	// views/pm/index.php
+	// views/default/index.php
 	'Personal messages' => 'Личные сообщения',
 	'Incoming' => 'Полученные',
 	'Outgoing' => 'Отправленные',
-	'Compose message' => 'Новое сообщение',
+	'Compose message' => 'Написать сообщение',
 	'Unread messages' => 'Новых сообщений',
 	'User id' => 'id пользователя',
+	'Widget example' => 'Пример виджета',
 	
 	'Compose message for user' => 'Новое сообщение для пользователя',
 
@@ -44,7 +45,7 @@ return array(
 	'User not found' => 'Пользователь не найден',
 	"You can't send messages to yourself" => "Вы не можете отправлять сообщения самому себе",
 
-	// views/pm/listincoming.php
+	// views/default/listincoming.php
 	'Incoming messages' => 'Полученные сообщения',
 	'New' => 'Новое',
 	
@@ -53,22 +54,32 @@ return array(
 	
 	'Message Id' => 'Id сообщения',
 	
-	// views/pm/listoutgoing.php
+	// views/default/listoutgoing.php
 	'Outgoing messages' => 'Отправленные сообщения',
 	'Message #' => 'Сообщение №',
 	
-	// views/pm/view.php
+	// views/default/view.php
 	'View message' => 'Просмотр сообщения',
 	'Reply' => 'Ответить',
 	'Do you really want to delete this message?' => 'Вы действительно хотите удалить это сообщение?',
 
-	// views/pm/reply.php
+	// views/default/reply.php
 	'Reply to message' => 'Ответить на сообщение',
 
-	// views/pm/delete
+	// views/default/delete
 	'Message has been succsefully deleted.' => 'Сообщение успешно удалено.',
 
 	// widget
 	'Messages({unread})' => 'Cообщения({unread})',
-	'Messages' => 'Сообщения'
+	'Messages' => 'Сообщения',
+
+	// views/thread/index
+	'Interlocutor' => 'Собеседник',
+
+	// views/thread/view
+	'View conversation' => 'Просмотр беседы',
+	'View conversation with {user}' => 'Просмотр беседы c {user}',
+
+	// views/thread/unreadList
+	'New conversations' => 'Новые беседы'
 );

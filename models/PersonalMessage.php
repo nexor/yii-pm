@@ -13,11 +13,7 @@
  * @property string $text
  */
 class PersonalMessage extends CActiveRecord
-{
-
-	public $senderUsername;
-	public $recipientUsername;
-	
+{	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return PersonalMessage the static model class
@@ -43,7 +39,7 @@ class PersonalMessage extends CActiveRecord
 		return array(
 			array('text', 'required'),
 			array('subject', 'safe'),
-			array('id, sender, recipient, read, date, subject, text', 'safe', 'on'=>'search'),
+			array('id, sender_id, recipient_id, read, created, subject, text', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -54,8 +50,8 @@ class PersonalMessage extends CActiveRecord
 	{
 		$userClass = Yii::app()->getModule('pm')->userClass;
 		return array(
-			'senderUser' => array(self::BELONGS_TO, $userClass, 'sender'),
-			'recipientUser' => array(self::BELONGS_TO, $userClass, 'recipient')
+			'sender' => array(self::BELONGS_TO, $userClass, 'sender_id'),
+			'recipient' => array(self::BELONGS_TO, $userClass, 'recipient_id')
 		);
 	}
 
@@ -66,12 +62,14 @@ class PersonalMessage extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'sender' => PmModule::t('Sender'),
-			'recipient' => PmModule::t('Recipient'),
+			'sender_id' => PmModule::t('Sender'),
+			'recipient_id' => PmModule::t('Recipient'),
 			'read' => PmModule::t('Read'),
-			'date' => PmModule::t('Date'),
+			'created' => PmModule::t('Created'),
 			'subject' => PmModule::t('Subject'),
 			'text' => PmModule::t('Text'),
+
+			'interlocutorId' => PmModule::t('Interlocutor')
 		);
 	}
 
@@ -88,9 +86,9 @@ class PersonalMessage extends CActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 
-		$criteria->compare('sender',$this->sender);
+		$criteria->compare('sender_id',$this->sender);
 
-		$criteria->compare('recipient',$this->recipient);
+		$criteria->compare('recipient_id',$this->recipient);
 
 		$criteria->compare('subject',$this->subject,true);
 
@@ -102,6 +100,159 @@ class PersonalMessage extends CActiveRecord
 	}
 
 	/**
+	 * Scopes list
+	 *
+	 * @return array
+	 */
+	public function scopes()
+	{
+		return array(
+			'unread' => array(
+				'condition' => '`read`=0 && `dr`=0'
+			),
+		);
+	}
+
+	/**
+	 * Scope: messages which given user can read and delete
+	 *
+	 * @return self
+	 */
+	public function haveAccess($userId)
+	{
+		$this->getDbCriteria()->mergeWith(array(
+			'condition' => '(sender_id = :user_id AND ds=0) OR (recipient_id = :user_id AND dr=0)',
+			'params' => array(
+				':user_id' => $userId
+			)
+		));
+		return $this;
+	}
+
+	/**
+	 * Scope: messages by given recipient Id
+	 *
+	 * @return self
+	 */
+	public function byRecipient($recipientId)
+	{
+		$this->getDbCriteria()->mergeWith(array(
+        		'condition' => 'recipient_id=:recipient_id',
+			'params' => array(
+				'recipient_id' => $recipientId
+			)
+    		));
+    		return $this;
+	}
+
+	/**
+	 * Scope: messages by given sender Id
+	 *
+	 * @return self
+	 */
+	public function bySender($senderId)
+	{
+		$this->getDbCriteria()->mergeWith(array(
+        		'condition' => 'sender_id=:sender_id',
+			'params' => array(
+				'sender_id' => $senderId
+			)
+   	 	));
+    		return $this;
+	}
+
+	/**
+	 * Scope: messages with given interlocutor Id
+	 *
+	 * @return self
+	 */
+	public function byInterlocutorId($interlocutorId)
+	{
+		$selfId = Yii::app()->getModule('pm')->getUserId();
+
+		$this->getDbCriteria()->mergeWith(array(
+			'condition' => '(sender_id=:user_id AND recipient_id=:inter_id) 
+				OR (recipient_id=:user_id AND sender_id=:inter_id)',
+
+			'params' => array(
+				':user_id' => $selfId,
+				':inter_id' => $interlocutorId
+			)
+   	 	));
+    		return $this;
+	}
+
+	/**
+	 * Get Id of the interlocutor
+	 *
+	 * @return int
+	 */
+	public function getInterlocutorId()
+	{	
+		$selfId = Yii::app()->getModule('pm')->getUserId();
+		if ($this->recipient_id == $selfId)
+		{
+			return $this->sender_id;
+		} elseif ($this->sender_id == $selfId)
+		{
+			return $this->recipient_id;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Get name of the interlocutor
+	 *
+	 * @return string
+	 */
+	public function getInterlocutorName()
+	{
+		$selfId = Yii::app()->getModule('pm')->getUserId();
+		if ($this->recipient_id == $selfId)
+		{
+			return $this->getSenderName();
+		} elseif ($this->sender_id == $selfId)
+		{
+			return $this->getRecipientName();
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Get sender name
+	 *
+	 * @return string
+	 */
+	public function getSenderName()
+	{
+		if ($this->sender)
+		{
+			$getNameMethod = Yii::app()->getModule('pm')->getNameMethod;
+			return $this->sender->$getNameMethod();
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Get recipient name
+	 *
+	 * @return string
+	 */
+	public function getRecipientName()
+	{
+		if ($this->recipient)
+		{
+			$getNameMethod = Yii::app()->getModule('pm')->getNameMethod;
+			return $this->recipient->$getNameMethod();
+		} else {
+			return null;
+		}
+	}
+
+	/**
 	 * Send this message to one or many users.
 	 *
 	 * @param int|array $recipients recipients user id's
@@ -110,7 +261,7 @@ class PersonalMessage extends CActiveRecord
 	{
 		if (!is_array($recipients))
 		{
-			$this->recipient = $recipients;
+			$this->recipient_id = $recipients;
 			$this->save();
 			return $this;
 		} else {
@@ -119,7 +270,7 @@ class PersonalMessage extends CActiveRecord
 			foreach ($recipients as $userid)
 			{
 				$message = $this->clone();
-				$message->recipient = $userid;
+				$message->recipient_id = $userid;
 				if (!$message->save())
 				{
 					$this->errorModels[] = $message;	
@@ -135,24 +286,15 @@ class PersonalMessage extends CActiveRecord
 		return $this->_errorModels;
 	}
 
-	public function beforeSave()
-	{
-		if ($this->isNewRecord)
-		{
-			if (empty($this->date))
-			{
-				$this->date = time();
-			}
-		}
-		return parent::beforeSave();
-	}
-
+	/**
+	 * Mark message as read
+	 */
 	public function markAsRead()
 	{
 		if (!$this->read)
 		{
 			$this->read = 1;
-			$this->save();
+			$this->save(false, array('read'));
 		}
 	}
 

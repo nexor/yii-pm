@@ -1,8 +1,8 @@
 <?php 
 if ($unread)
 	echo CHtml::link(PmModule::t('Messages({unread})', array('{unread}' => $unread)),
-		array('/pm/default/listincoming')
+		$this->url
 	);
 else
-	echo CHtml::link(PmModule::t('Messages'), array('/pm/default/listincoming'));
+	echo CHtml::link(PmModule::t('Messages'), $this->url);
 ?>

@@ -1,12 +1,23 @@
-<h2><?php echo PmModule::t('Personal messages'); ?> - <?php echo PmModule::t('Outgoing'); ?></h2>
+<?php
+	$this->breadcrumbs += array(PmModule::t('Outgoing')); 
+?>
+<h2><?php echo PmModule::t('Outgoing'); ?></h2>
 
-<?php $this->widget('zii.widgets.grid.CGridView', array(
+<?php 
+$getNameMethod = Yii::app()->getModule('pm')->getNameMethod;
+//$recipientValue = 
+
+
+$this->widget('zii.widgets.grid.CGridView', array(
 	'dataProvider' => $dataProvider,
 	'columns' => array(
-		'recipient',
 		array(
-			'name' => 'date',
-			'value' => 'Yii::app()->dateFormatter->format("yyy-MM-dd HH:mm:ss", $data->date)'
+			'name' => 'recipient_id',
+			'value' => '$data->recipient->'.$getNameMethod.'();'
+		),
+		array(
+			'name' => 'created',
+			'value' => 'Yii::app()->dateFormatter->format("yyy-MM-dd HH:mm:ss", $data->created)'
 		),
 		'subject',
 		array(

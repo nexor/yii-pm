@@ -1,7 +1,12 @@
-<h2><?php echo PmModule::t('Personal messages'); ?> - <?php echo PmModule::t('Compose message'); ?></h2>
+<?php
+$this->breadcrumbs += array(PmModule::t('Compose message')); 
+?> 
 
-<p><?php echo PmModule::t('Compose message for user');?> #<?php echo $model->recipient; ?></p>
+<h2><?php echo PmModule::t('Compose message'); ?></h2>
+
+<p>
+	<?php echo PmModule::t('Compose message for user'); echo ' '.CHtml::encode($model->recipientName); ?>
+</p>
 
 <?php $this->renderPartial('_form', array('model' => $model)); ?>
-
 
