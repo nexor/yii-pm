@@ -7,27 +7,81 @@
  */
 class PmModule extends CWebModule
 {
-	public $userClass = 'User';    // User model class name
+	/**
+	 * User model class name
+	 * @var string
+	 */
+	public $userClass = 'User';
+
+	/**
+	 * Method for getting user name.
+	 * If callback, then user model will be passed as the argument.
+	 * @var string|callback
+	 */
 	public $getNameMethod = 'getName';
+
+	/**
+	 * @var string|callback
+	 */
 	public $getUserIdExpression = 'Yii::app()->user->id';
-	public $tableName = 'pm';    // User's table name
-	public $reallyDelete = true;   // Delete messages from database, not only mark as deleted
-	public $outgoingPageSize = 10; // Messages per page in the outgoing list
-	public $incomingPageSize = 10; // Messages per page in the incoming list
-	
+
+	/**
+	 * User's table name
+	 * @var string
+	 */
+	public $tableName = 'pm';
+
+	/**
+	 * Delete messages from database, not only mark as deleted
+	 * @var bool
+	 */
+	public $reallyDelete = true;
+
+	/**
+	 * Messages per page in the outgoing list
+	 * @var int
+	 */
+	public $outgoingPageSize = 10;
+
+	/**
+	 * Messages per page in the incoming list
+	 * @var int
+	 */
+	public $incomingPageSize = 10; //
+
+	/**
+	 * Enable conversation mode
+	 * @var bool
+	 */
 	public $conversationMode = true;
-	
+
+	/**
+	 * Additional models import
+	 * @var array
+	 */
+	public $import = array();
+
+	/**
+	 * Module initialization
+	 * @return void
+	 */
 	public function init()
 	{
-		$this->setImport(array(
-			'pm.models.*',
-			'pm.components.*',
+		$this->setImport(array_merge(
+			$this->import,
+			array(
+				'pm.models.*',
+				'pm.components.*',
+			)
 		));
+		return parent::init();
 	}
 
 	/**
 	 * Translate message
 	 *
+	 * @param $message
+	 * @param array $params
 	 * @return string
 	 */
 	public static function t($message, $params = array())
@@ -36,11 +90,31 @@ class PmModule extends CWebModule
 	}
 
 	/**
-	 * This method must return current user id
+	 * Get current user id
 	 * @return string
 	 */
 	public function getUserId()
 	{
-		return eval('return '.$this->getUserIdExpression.';');
+		return $this->evaluateExpression($this->getUserIdExpression);
+	}
+
+	/**
+	 * Get username for the given user model.
+	 * @param CActiveRecord $model  User model
+	 * @throws CException
+	 * @return string
+	 */
+	public function getUserName($model)
+	{
+		$getNameMethod = $this->getNameMethod;
+		if (is_string($getNameMethod))
+		{
+			return $model->$getNameMethod();
+		} elseif (is_callable($getNameMethod)) {
+			return $this->evaluateExpression($getNameMethod, array('user' => $model));
+		} else {
+			throw new CException(__CLASS__." error: 'getNameMethod' option must be a string or valid callback");
+		}
+
 	}
 }

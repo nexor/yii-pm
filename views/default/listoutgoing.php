@@ -1,19 +1,18 @@
 <?php
-	$this->breadcrumbs += array(PmModule::t('Outgoing')); 
+/**
+ * @var CActiveDataProvider $dataProvider
+ * @var DefaultController $this
+ */
+$this->breadcrumbs += array(PmModule::t('Outgoing'));
 ?>
 <h2><?php echo PmModule::t('Outgoing'); ?></h2>
 
-<?php 
-$getNameMethod = Yii::app()->getModule('pm')->getNameMethod;
-//$recipientValue = 
-
-
-$this->widget('zii.widgets.grid.CGridView', array(
+<?php $this->widget('zii.widgets.grid.CGridView', array(
 	'dataProvider' => $dataProvider,
 	'columns' => array(
 		array(
 			'name' => 'recipient_id',
-			'value' => '$data->recipient->'.$getNameMethod.'();'
+			'value' => 'Yii::app()->controller->module->getUserName($data->recipient);'
 		),
 		array(
 			'name' => 'created',

@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var DefaultController $this
+ * @var array $users
+ */
+?>
 <h1><?php echo PmModule::t('Personal messages'); ?></h1>
 <?php if (Yii::app()->user->hasFlash('success')): ?>
 	<div class="flash-success">
@@ -24,7 +30,7 @@
 <ul>
 	<?php foreach ($users as $user): ?>
 	<li> 
-		<?php echo $user->{$this->module->getNameMethod}(); ?>
+		<?php echo $this->module->getUserName($user); ?>
 		&nbsp;
 		(<?php echo CHtml::link('Написать сообщение', array(
 			'create', 'to' => $user->getPrimaryKey())
@@ -46,5 +52,5 @@
 <?php $this->endWidget(); ?>
 
 <br />
-	<h2><?php echo PmModulle::t('Widget example'); ?></h2>
+	<h2><?php echo PmModule::t('Widget example'); ?></h2>
 <?php $this->widget('application.modules.pm.components.pmwidget'); ?>

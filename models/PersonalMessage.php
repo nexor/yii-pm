@@ -229,8 +229,7 @@ class PersonalMessage extends CActiveRecord
 	{
 		if ($this->sender)
 		{
-			$getNameMethod = Yii::app()->getModule('pm')->getNameMethod;
-			return $this->sender->$getNameMethod();
+			return Yii::app()->getModule('pm')->getUserName($this->sender);
 		} else {
 			return null;
 		}
@@ -245,8 +244,7 @@ class PersonalMessage extends CActiveRecord
 	{
 		if ($this->recipient)
 		{
-			$getNameMethod = Yii::app()->getModule('pm')->getNameMethod;
-			return $this->recipient->$getNameMethod();
+			return Yii::app()->getModule('pm')->getUserName($this->recipient);
 		} else {
 			return null;
 		}
@@ -256,6 +254,7 @@ class PersonalMessage extends CActiveRecord
 	 * Send this message to one or many users.
 	 *
 	 * @param int|array $recipients recipients user id's
+	 * @return bool|\PersonalMessage
 	 */
 	public function send($recipients)
 	{

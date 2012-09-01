@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var CActiveDataProvider $dataProvider
+ */
+?>
 <h1><?php echo PmModule::t('Personal messages'); ?></h1>
 <?php if (Yii::app()->user->hasFlash('success')): ?>
 	<div class="flash-success">
@@ -15,7 +20,7 @@
 <ul>
 	<?php foreach ($users as $user): ?>
 	<li> 
-		<?php echo $user->{$this->module->getNameMethod}(); ?>
+		<?php echo $this->module->getUserName($user); ?>
 		&nbsp;
 		(<?php echo CHtml::link(PmModule::t('Compose message'), array(
 			'view', 'id' => $user->getPrimaryKey())

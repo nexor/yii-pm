@@ -4,7 +4,6 @@ if ($this->_userId == $data->recipient_id)
 	$data->markAsRead();
 }
 ?>
-<?php echo $this->_userId.' '.$data->recipient_id.' '.$data->read; ?>
 <div class="view">
 	<div style="float: left;">
 		[<?php echo Yii::app()->dateFormatter->format('dd MMMM yyyy hh:mm',$data->created); ?>] 
