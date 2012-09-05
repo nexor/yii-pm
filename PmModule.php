@@ -3,7 +3,9 @@
 /**
  * Personal Messages module for Yii framework
  *
- * @version 0.3
+ * @author Pavel Chebotarev <chebotarevp@gmail.com>
+ * @version 0.4
+ * @license http://www.opensource.org/licenses/bsd-license.php
  */
 class PmModule extends CWebModule
 {

@@ -1,0 +1,21 @@
+{
+	"name": "nexor/yii-pm",
+	"type": "library",
+	"description": "Personal messages module for Yii framework",
+	"keywords": ["yii","personal message"],
+	"homepage": "https://github.com/nexor/yii-pm",
+	"license": [
+		"BSD-3-Clause",
+		"MIT"
+	],
+	"authors": [
+		{
+			"name": "Pavel Chebotarev",
+			"email": "chebotarevp@gmail.com",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"php": ">=5.3.0"
+        }
+}
