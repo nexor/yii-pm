@@ -1,6 +1,6 @@
 {
 	"name": "nexor/yii-pm",
-	"type": "library",
+	"type": "yii-module",
 	"description": "Personal messages module for Yii framework",
 	"keywords": ["yii","personal message"],
 	"homepage": "https://github.com/nexor/yii-pm",
@@ -16,6 +16,7 @@
 		}
 	],
 	"require": {
-		"php": ">=5.3.0"
+		"php": ">=5.3.0",
+        "composer/installers": "~1.0"
         }
 }
