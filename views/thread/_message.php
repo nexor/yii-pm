@@ -7,7 +7,7 @@ if ($this->_userId == $data->recipient_id)
 <div class="view">
 	<div style="float: left;">
 		[<?php echo Yii::app()->dateFormatter->format('dd MMMM yyyy hh:mm',$data->created); ?>] 
-		<b><?php echo $data->sender->name; ?></b> 
+		<b><?php echo $data->senderName; ?></b> 
 		<?php echo $this->_userId == $data->sender_id? '&larr;' : '&rarr;' ?>
 		&nbsp;
 	</div>
