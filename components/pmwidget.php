@@ -13,7 +13,7 @@ class PmWidget extends CWidget {
 			return;
 		}
 		
-		$module = Yii::app()->getModule($this->$moduleName);
+		$module = Yii::app()->getModule($this->moduleName);
 		$tableName = ($this->tableName === null) ? $module->tableName : $this->tableName;
 		$userId = ($this->userId === null) ? $module->getUserId() : $this->userId;
 		
